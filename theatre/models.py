@@ -9,7 +9,7 @@ class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"Reservation for {self.user}"
@@ -19,7 +19,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Actor(models.Model):
     last_name = models.CharField(max_length=50)
 
     class Meta:
-        ordering = ['last_name']
+        ordering = ["last_name"]
 
     @property
     def full_name(self):
@@ -41,13 +41,13 @@ class Actor(models.Model):
 
 
 class Play(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     description = models.TextField()
-    genres = models.ManyToManyField(Genre)
-    actors = models.ManyToManyField(Actor)
+    genres = models.ManyToManyField(Genre, related_name="plays")
+    actors = models.ManyToManyField(Actor, related_name="plays")
 
     class Meta:
-        ordering = ['title']
+        ordering = ["title"]
 
     def __str__(self):
         return self.title
@@ -55,11 +55,11 @@ class Play(models.Model):
 
 class TheatreHall(models.Model):
     name = models.CharField(max_length=100)
-    rows = models.PositiveIntegerField()
-    seats_in_row = models.PositiveIntegerField()
+    rows = models.IntegerField()
+    seats_in_row = models.IntegerField()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     @property
     def capacity(self):
@@ -75,32 +75,50 @@ class Performance(models.Model):
     show_time = models.DateTimeField()
 
     class Meta:
-        ordering = ['show_time']
+        ordering = ["show_time"]
 
     def __str__(self):
         return f"{self.play.title} - {self.show_time}"
 
 
 class Ticket(models.Model):
-    row = models.PositiveIntegerField()
-    seat = models.PositiveIntegerField()
-    performance = models.ForeignKey(Performance, on_delete=models.CASCADE, related_name="tickets")
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name="tickets")
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    performance = models.ForeignKey(
+        Performance, on_delete=models.CASCADE, related_name="tickets"
+    )
+    reservation = models.ForeignKey(
+        Reservation, on_delete=models.CASCADE, related_name="tickets"
+    )
 
     class Meta:
-        ordering = ['performance']
-        unique_together = ('row', 'seat', 'performance')
+        ordering = ["performance"]
+        unique_together = ("row", "seat", "performance")
 
     def clean(self):
-        if not (1 <= self.seat <= self.performance.theatre_hall.seats_in_row):
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
+            (self.row, "row", "rows"),
+            (self.seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs = getattr(
+                self.performance.theatre_hall, theatre_hall_attr_name
+            )
+        if not (1 <= ticket_attr_value <= count_attrs):
             raise ValidationError(
                 {
-                    "seat": f"seat must be "
-                            f"in available range: "
-                            f"(1, {self.performance.theatre_hall.seats_in_row}), not "
-                            f"{self.seat}"
+                    ticket_attr_name: f"{ticket_attr_name} "
+                                      f"number must be in available range: "
+                                      f"(1, {theatre_hall_attr_name}): "
+                                      f"(1, {count_attrs})"
                 }
             )
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        self.full_clean()
+        super(Ticket, self).save(force_insert, force_update, using, update_fields)
+
 
     def __str__(self):
         return f"Ticket {self.row}-{self.seat} for {self.performance.play.title}"
