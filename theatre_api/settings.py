@@ -26,7 +26,9 @@ SECRET_KEY = "django-insecure-1jp(=o30c5&l12)lyo2m%g5o86o9yb&0no60(x=xj2i+2+6xbl
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Application definition
 
@@ -140,6 +142,9 @@ REST_FRAMEWORK = {
         "anon": "10/minute",
         "user": "30/minute"
     },
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
 }
 
 SPECTACULAR_SETTINGS = {
