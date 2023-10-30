@@ -120,18 +120,24 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     ticket_attr_name: f"{ticket_attr_name} "
-                                      f"number must be in available range: "
-                                      f"(1, {theatre_hall_attr_name}): "
-                                      f"(1, {count_attrs})"
+                    f"number must be in available range: "
+                    f"(1, {theatre_hall_attr_name}): "
+                    f"(1, {count_attrs})"
                 }
             )
 
     def save(
-        self, force_insert=False, force_update=False, using=None, update_fields=None
+        self,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None
     ):
         self.full_clean()
-        super(Ticket, self).save(force_insert, force_update, using, update_fields)
-
+        super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self):
-        return f"Ticket {self.row}-{self.seat} for {self.performance.play.title}"
+        return (f"Ticket {self.row}-{self.seat} "
+                f"for {self.performance.play.title}")

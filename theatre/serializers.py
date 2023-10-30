@@ -1,6 +1,14 @@
 from django.db import transaction
 from rest_framework import serializers
-from .models import TheatreHall, Genre, Actor, Play, Performance, Reservation, Ticket
+from .models import (
+    TheatreHall,
+    Genre,
+    Actor,
+    Play,
+    Performance,
+    Reservation,
+    Ticket
+)
 
 
 class TheatreHallSerializer(serializers.ModelSerializer):
@@ -77,32 +85,6 @@ class PerformanceListSerializer(serializers.ModelSerializer):
         )
 
 
-class PerformanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Performance
-        fields = ("id", "show_time", "play", "theatre_hall")
-
-
-class PerformanceListSerializer(serializers.ModelSerializer):
-    play_title = serializers.CharField(source="play.title", read_only=True)
-    theatre_hall_name = serializers.CharField(
-        source="theatre_hall.name", read_only=True
-    )
-    theatre_hall_capacity = serializers.IntegerField(
-        source="theatre_hall.capacity", read_only=True
-    )
-
-    class Meta:
-        model = Performance
-        fields = (
-            "id",
-            "show_time",
-            "play_title",
-            "theatre_hall_name",
-            "theatre_hall_capacity",
-        )
-
-
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
@@ -145,7 +127,7 @@ class PerformanceDetailSerializer(PerformanceSerializer):
         fields = (
             "id",
             "show_time",
-            "play_title",
+            "play",
             "theatre_hall",
             "taken_places",
         )

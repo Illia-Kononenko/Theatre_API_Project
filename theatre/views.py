@@ -1,11 +1,11 @@
 from django.db.models import F, Count
-from rest_framework import viewsets, status
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework.viewsets import GenericViewSet
 
 from .models import (
     TheatreHall,
@@ -26,7 +26,10 @@ from .serializers import (
     ReservationSerializer,
     TicketSerializer,
     PlayListSerializer,
-    PlayDetailSerializer, PerformanceListSerializer, PerformanceDetailSerializer, ReservationListSerializer,
+    PlayDetailSerializer,
+    PerformanceListSerializer,
+    PerformanceDetailSerializer,
+    ReservationListSerializer,
     PlayImageSerializer,
 )
 
@@ -35,25 +38,42 @@ def _params_to_ints(params) -> list:
     return [int(str_id) for str_id in params.split(",")]
 
 
-class TheatreHallViewSet(viewsets.ModelViewSet):
+class TheatreHallViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class ActorViewSet(viewsets.ModelViewSet):
+class ActorViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
-class PlayViewSet(viewsets.ModelViewSet):
+class PlayViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Play.objects.all()
     serializer_class = PlaySerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -95,7 +115,7 @@ class PlayViewSet(viewsets.ModelViewSet):
         methods=["POST"],
         detail=True,
         url_path="upload-image",
-        permission_classes=[IsAdminUser]
+        permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
         play = self.get_object()
@@ -143,11 +163,10 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
         if self.action == "list":
             queryset = queryset.select_related(
-                "play", "theatre_hall"
-            ).annotate(
-                tickets_available=F(
-                    "theatre_hall__seats_in_row"
-                ) * F("theatre_hall__rows") - Count("tickets")
+                "play", "theatre_hall").annotate(
+                tickets_available=F("theatre_hall__seats_in_row")
+                * F("theatre_hall__rows")
+                - Count("tickets")
             )
 
         return queryset
