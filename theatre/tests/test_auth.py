@@ -7,7 +7,12 @@ from rest_framework import status
 
 from theatre.models import Play
 from theatre.serializers import PlayListSerializer, PlayDetailSerializer
-from theatre.tests.test_samples import sample_play, sample_genre, sample_actor, detail_url
+from theatre.tests.test_samples import (
+    sample_play,
+    sample_genre,
+    sample_actor,
+    detail_url,
+)
 
 PLAY_URL = reverse("theatre:play-list")
 PERFORMANCE_URL = reverse("theatre:performance-list")
@@ -27,8 +32,7 @@ class AuthenticatedCinemaTests(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
-            "test@test.com",
-            "password"
+            "test@test.com", "password"
         )
 
         self.client.force_authenticate(self.user)
@@ -72,7 +76,7 @@ class AuthenticatedCinemaTests(TestCase):
             {
                 "title": "play 1",
                 "genres": f"{genre.id}",
-                "actors": f"{actor.id}"
+                "actors": f"{actor.id}",
             },
         )
 

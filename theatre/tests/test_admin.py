@@ -6,7 +6,12 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 from theatre.models import Play
-from theatre.tests.test_samples import sample_actor, sample_genre, sample_play, detail_url
+from theatre.tests.test_samples import (
+    sample_actor,
+    sample_genre,
+    sample_play,
+    detail_url,
+)
 
 PLAY_URL = reverse("theatre:play-list")
 PERFORMANCE_URL = reverse("theatre:performance-list")

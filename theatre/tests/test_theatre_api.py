@@ -44,9 +44,7 @@ def sample_actor(**params):
 
 def sample_performance(**params):
     theatre_hall = TheatreHall.objects.create(
-        name="Blue",
-        rows=20,
-        seats_in_row=20
+        name="Blue", rows=20, seats_in_row=20
     )
 
     defaults = {
@@ -163,8 +161,7 @@ class AuthenticatedCinemaTests(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
-            "test@test.com",
-            "password"
+            "test@test.com", "password"
         )
 
         self.client.force_authenticate(self.user)
@@ -208,7 +205,7 @@ class AuthenticatedCinemaTests(TestCase):
             {
                 "title": "play 1",
                 "genres": f"{genre.id}",
-                "actors": f"{actor.id}"
+                "actors": f"{actor.id}",
             },
         )
 

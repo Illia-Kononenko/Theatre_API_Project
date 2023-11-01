@@ -7,7 +7,7 @@ from .models import (
     Play,
     TheatreHall,
     Performance,
-    Ticket
+    Ticket,
 )
 
 

@@ -16,7 +16,7 @@ from theatre.tests.test_samples import (
     sample_performance,
     sample_genre,
     image_upload_url,
-    detail_url
+    detail_url,
 )
 
 PLAY_URL = reverse("theatre:play-list")

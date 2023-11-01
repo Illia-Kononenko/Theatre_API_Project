@@ -34,9 +34,7 @@ def sample_actor(**params):
 
 def sample_performance(**params):
     theatre_hall = TheatreHall.objects.create(
-        name="Blue",
-        rows=20,
-        seats_in_row=20
+        name="Blue", rows=20, seats_in_row=20
     )
 
     defaults = {

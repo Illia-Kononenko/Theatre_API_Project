@@ -131,7 +131,7 @@ class Ticket(models.Model):
         force_insert=False,
         force_update=False,
         using=None,
-        update_fields=None
+        update_fields=None,
     ):
         self.full_clean()
         super(Ticket, self).save(
@@ -139,5 +139,7 @@ class Ticket(models.Model):
         )
 
     def __str__(self):
-        return (f"Ticket {self.row}-{self.seat} "
-                f"for {self.performance.play.title}")
+        return (
+            f"Ticket {self.row}-{self.seat} "
+            f"for {self.performance.play.title}"
+        )

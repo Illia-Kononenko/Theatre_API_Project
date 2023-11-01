@@ -20,6 +20,39 @@ Theatre API Service is designed to streamline the management of theatre-related 
 
 ## Installation
 
+### Using GitHub
+
+1. Clone the repository:
+
+```shell
+git clone https://github.com/Illia-Kononenko/Theatre_API_Project.git
+cd Theatre_API_Project
+```
+
+2. Set up the virtual environment and install the required dependencies:
+
+```shell
+python -m venv venv
+source venv/Scripts/activate (on Windows)
+source venv/bin/activate (on macOS)
+pip install -r requirements.txt
+```
+
+3. Generate a .env file from .env.sample.
+
+
+4. Run the database migrations:
+
+```shell
+python manage.py migrate
+```
+
+5. Run the development server:
+```shell
+python manage.py runserver
+```
+
+### Run with Docker
 1. Clone the repository:
 
    ```
