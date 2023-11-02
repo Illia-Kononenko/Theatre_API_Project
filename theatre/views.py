@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.viewsets import GenericViewSet
 
-from .models import (
+from theatre.models import (
     TheatreHall,
     Genre,
     Actor,
@@ -16,8 +16,8 @@ from .models import (
     Reservation,
     Ticket,
 )
-from .permissions import IsAdminOrIfAuthenticatedReadOnly
-from .serializers import (
+from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
+from theatre.serializers import (
     TheatreHallSerializer,
     GenreSerializer,
     ActorSerializer,

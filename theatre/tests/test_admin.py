@@ -13,6 +13,7 @@ from theatre.tests.test_samples import (
     detail_url,
 )
 
+
 PLAY_URL = reverse("theatre:play-list")
 PERFORMANCE_URL = reverse("theatre:performance-list")
 

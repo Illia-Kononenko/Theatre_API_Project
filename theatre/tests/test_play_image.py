@@ -1,5 +1,5 @@
-import tempfile
 import os
+import tempfile
 
 from PIL import Image
 from django.contrib.auth import get_user_model
@@ -18,6 +18,7 @@ from theatre.tests.test_samples import (
     image_upload_url,
     detail_url,
 )
+
 
 PLAY_URL = reverse("theatre:play-list")
 PERFORMANCE_URL = reverse("theatre:performance-list")
